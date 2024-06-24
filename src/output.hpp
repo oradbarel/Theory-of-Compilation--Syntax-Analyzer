@@ -3,7 +3,8 @@
 
 #include <string>
 
-namespace output {
+namespace output
+{
     extern const std::string rules[];
     void printProductionRule(const int ruleno);
     void errorLex(const int lineno);
