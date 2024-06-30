@@ -38,6 +38,7 @@ const std::string output::rules[] = {
 };
 
 void output::printProductionRule(const int ruleno) {
+    if(1) if(2) printf("2"); else printf("else"); 
     std::cout << ruleno << ": " << output::rules[ruleno-1] << "\n";
 }
 
