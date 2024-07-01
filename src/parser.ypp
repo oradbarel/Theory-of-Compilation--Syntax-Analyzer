@@ -3,41 +3,41 @@
     #include "output.hpp"
 
     extern int yylex();
-
-    void yyerror(const char *s);
     extern int yylineno;
-
+    void yyerror(const char *s);
+    
     using namespace output;
 %}
 
-%token LBRACE
-%token RBRACE
 %token TYPE
 %token ID
 %token SC
-%token ASSIGN
-%token LPAREN
-%token RPAREN
 %token RETURN
 %token IF
-%token ELSE
 %token WHILE
 %token BREAK
-%token CONTINUE
+%token CONTINUE 
 %token CALL
 %token INT
 %token BYTE
 %token BOOL
-%token BINOP
 %token NUM
 %token B
 %token STRING
 %token TRUE
 %token FALSE
-%token NOT
-%token AND
-%token OR
-%token RELOP
+
+%right ASSIGN
+%left OR
+%left AND
+%left EQUALITYOP
+%left RELATIONALOP
+%left PLUS MINUS
+%left MULT DIV
+%right NOT
+%left LPAREN RPAREN LBRACE RBRACE
+%right ELSE // It seems that with `%nonassoc` it works as well...
+
 
 %%
 Program:
@@ -75,7 +75,10 @@ Type:
 
 Exp:
     LPAREN Exp RPAREN { printProductionRule(19); }
-    | Exp BINOP Exp { printProductionRule(20); }
+    | Exp PLUS Exp { printProductionRule(20); }
+    | Exp MINUS Exp { printProductionRule(20); }
+    | Exp MULT Exp { printProductionRule(20); }
+    | Exp DIV Exp { printProductionRule(20); }
     | ID { printProductionRule(21); }
     | Call { printProductionRule(22); }
     | NUM { printProductionRule(23); }
@@ -86,7 +89,8 @@ Exp:
     | NOT Exp { printProductionRule(28); }
     | Exp AND Exp { printProductionRule(29); }
     | Exp OR Exp { printProductionRule(30); }
-    | Exp RELOP Exp { printProductionRule(31); }
+    | Exp EQUALITYOP Exp { printProductionRule(31); }
+    | Exp RELATIONALOP Exp { printProductionRule(31); }
     | LPAREN Type RPAREN Exp { printProductionRule(32); }
     ;
 %%
@@ -94,5 +98,10 @@ Exp:
 void yyerror(const char *s)
 {
     errorSyn(yylineno);
+    exit(0);
 }
 
+int main()
+{
+    return yyparse();
+}

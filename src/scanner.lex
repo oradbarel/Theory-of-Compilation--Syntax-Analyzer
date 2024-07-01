@@ -8,6 +8,7 @@
 %option yylineno
 %option noyywrap
 
+
 %%
 int return INT;
 byte return BYTE;
@@ -30,13 +31,17 @@ continue return CONTINUE;
 \{ return LBRACE;
 \} return RBRACE;
 = return ASSIGN;
-(==|!=|<|>|<=|>=) return RELOP;
-(\+|\-|\*|\/) return BINOP;
+(==|!=) return EQUALITYOP;
+(<|>|<=|>=) return RELATIONALOP;
+\+ return PLUS;
+\- return MINUS;
+\* return MULT;
+\/ return DIV;
 [a-zA-Z][a-zA-Z0-9]* return ID;
 0|[1-9][0-9]* return NUM;
-"([^\n\r\"\\]|\\[rnt"\\])+" return STRING
+\"([^\n\r\"\\]|\\[rnt"\\])+\" return STRING;
 [ \t\r\n]+ ;
-//[^\r\n]*[\r|\n|\r\n]? ;
+\/\/[^\r\n]*[\r|\n|\r\n]? ;
 
-. errorLex(yylineno);
+. { errorLex(yylineno); exit(0); }
 %%
